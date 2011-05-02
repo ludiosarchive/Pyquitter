@@ -7,8 +7,8 @@ import pyquitter
 setup(
 	name='pyquitter',
 	version=pyquitter.__version__,
-	description="Detects file modifications for all imported modules; "
-		"useful for auto-restarting programs.",
+	description="Detects file modifications to any imported module; "
+		"useful for auto-restarting during development.",
 	packages=['pyquitter'],
 	scripts=['bin/looper', 'bin/looper-stop'],
 )
