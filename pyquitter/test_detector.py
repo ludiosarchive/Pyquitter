@@ -16,7 +16,7 @@ except ImportError:
 
 # Keep this import here to make import-time failures happen here,
 # not in the child process.
-from modsniffer.detector import pythonUsesPyo
+from pyquitter.detector import pythonUsesPyo
 
 
 
@@ -64,7 +64,7 @@ class WaitForOK(protocol.ProcessProtocol):
 
 
 class DetectorTests(unittest.TestCase):
-	stopper = 'detector.ModulesChangeDetector'
+	stopper = 'detector.ChangeDetector'
 	makePycPyoAndDeletePy = False
 	extraPyArgs = []
 
@@ -105,7 +105,7 @@ import %s_importable
 
 		pyFile = baseName+'_importable.py'
 		
-		# very ugly hack to make the tests pass when modsniffer is not installed
+		# ugly hack to make the tests pass when pyquitter is not installed
 		# (get the parent directory of the directory test_detector.py is in)
 		cwd = os.path.split(os.path.split(__file__)[0])[0]
 		with open(pyFile, 'wb') as tempFile:
@@ -115,7 +115,7 @@ from twisted.python import log
 log.startLogging(sys.stdout)
 
 sys.path.insert(0, %s)
-from modsniffer import detector
+from pyquitter import detector
 import time
 
 stop = False
@@ -124,10 +124,10 @@ def setStop():
 	global stop
 	stop = True
 
-class MoreTrackingDetector(detector.ModulesChangeDetector):
+class MoreTrackingDetector(detector.ChangeDetector):
 	alsoTrackPycPyos = True
 
-class NoisyDetector(detector.ModulesChangeDetector):
+class NoisyDetector(detector.ChangeDetector):
 	noisy = True
 
 stopper = %s(setStop, usePyflakes=True)

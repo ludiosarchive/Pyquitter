@@ -23,7 +23,7 @@ def _print(x):
 	print x
 
 
-class ModulesChangeDetector(object):
+class ChangeDetector(object):
 	"""
 	This object calls L{callable} if any of the running program's source files
 	or compiled-module files have changed, unless the source files have
@@ -35,7 +35,7 @@ class ModulesChangeDetector(object):
 	example/ directory.
 
 	Note that this will sometimes miss a change, if your source modules
-	change before ModulesChangeDetector first takes a look at them.  This
+	change before ChangeDetector first takes a look at them.  This
 	is very rare but can happen early in your program startup.
 	"""
 

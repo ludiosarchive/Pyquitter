@@ -1,4 +1,4 @@
-Modsniffer license:
+Pyquitter license:
 
 Copyright (C) 2009-2011 Ivan Kozik
 

@@ -1,15 +1,15 @@
-Modsniffer overview
+Pyquitter overview
 ==============
 
 So, you've got a program that you're working on, and you're tired of
 hitting Ctrl-C, Up, Enter.  You'd like it to just restart every time you
-make a change.  Here's how Modsniffer helps you solve this problem:
+make a change.  Here's how Pyquitter helps you solve this problem:
 
 1.	Early in your program startup, you instantiate
-	`modsniffer.detector.ModulesChangeDetector` with a 0-arg callable
+	`pyquitter.detector.ChangeDetector` with a 0-arg callable
 	(one that quits your program).
 
-2.	In addition, you set up a timer to call `yourModulesChangeDetector.checkForChanges()`
+2.	In addition, you set up a timer to call `yourChangeDetector.checkForChanges()`
 	every few seconds.  If any of your imported modules have changed,
 	the `callable` you passed in earlier will be called.
 
@@ -23,12 +23,12 @@ Installation
 ========
 `python setup.py install`
 
-This installs the module `modsniffer` as well as the binaries `looper` and `looper-stop`.
+This installs the module `pyquitter` as well as the binaries `looper` and `looper-stop`.
 
 
 Sample use
 ========
-This example uses Twisted, but there's nothing Twisted-specific in Modsniffer.
+This example uses Twisted, but there's nothing Twisted-specific in Pyquitter.
 
 ```
 # demo.py
@@ -39,9 +39,9 @@ log.startLogging(sys.stdout)
 
 from twisted.internet import task
 from twisted.internet import reactor
-from modsniffer.detector import ModulesChangeDetector
+from pyquitter.detector import ChangeDetector
 
-stopper = ModulesChangeDetector(
+stopper = ChangeDetector(
 	lambda: reactor.callWhenRunning(reactor.stop),
 	logCallable=log.msg)
 	# logCallable is optional; if not passed, it uses print.
@@ -64,7 +64,7 @@ If you modify demo.py or any module it has imported, you'll see the program rest
 Running the tests
 =============
 
-Install Twisted, then `trial modsniffer`.
+Install Twisted, then `trial pyquitter`.
 
 
 Wishlist
@@ -72,7 +72,7 @@ Wishlist
 *	Detect changes to modules outside of the process.  Feed a list of files
 	to some parent process that monitors the modules for the often-restarting child.
 	This would fix a race condition where a module is changed before
-	`ModulesChangeDetector` takes a look at it.
+	`ChangeDetector` takes a look at it.
 
 *	Rewrite the tests; don't spawn child `python`s.
 
