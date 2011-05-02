@@ -16,7 +16,7 @@ except ImportError:
 
 # Keep this import here to make import-time failures happen here,
 # not in the child process.
-from pypycpyo.detector import pythonUsesPyo
+from modsniffer.detector import pythonUsesPyo
 
 
 
@@ -52,7 +52,8 @@ class WaitForOK(protocol.ProcessProtocol):
 
 		self.killIfData(data)
 
-		# TODO: Don't assume that we'll get the string all at once (?) Does this ever happen?
+		# TODO: Don't assume that we'll get the string all at once (?)
+		# Does this ever happen?
 		if "Write over me now." in data:
 			self.okToWrite.callback(None)
 
@@ -63,8 +64,7 @@ class WaitForOK(protocol.ProcessProtocol):
 
 
 class DetectorTests(unittest.TestCase):
-	pyLaunchTime = 2**31
-	stopper = 'detector.SourceChangesDetector'
+	stopper = 'detector.ModulesChangeDetector'
 	makePycPyoAndDeletePy = False
 	extraPyArgs = []
 
@@ -76,8 +76,9 @@ class DetectorTests(unittest.TestCase):
 		with open(pyFile, 'wb') as new:
 			new.write('# nothing (written by %s)' % (__file__,))
 
-		# makePycPyoAndDeletePy = False means we are not tracking bare pyc and pyo files,
-		# so writing something to them should have no effect. Confirm this.
+		# makePycPyoAndDeletePy = False means we are not tracking bare
+		# pyc and pyo files, so writing something to them should have
+		# no effect. Confirm this.
 		with open(pyFile + 'c', 'wb') as f:
 			f.write('#1')
 		with open(pyFile + 'o', 'wb') as f:
@@ -89,7 +90,8 @@ class DetectorTests(unittest.TestCase):
 		# It might detect a change in more than 1 source file, if the .pyc (.pyo)
 		# files for dependencies like Python's Lib are fresh enough.
 		self.assertEqual(1, pp.stdout.count('Detected a change in '), pp.stdout)
-		self.assertEqual(1, pp.stdout.count('[not detector] Stopping because changes found.'), pp.stdout)
+		self.assertEqual(1, pp.stdout.count(
+			'[not detector] Stopping because changes found.'), pp.stdout)
 
 
 	def test_detector(self):
@@ -103,7 +105,7 @@ import %s_importable
 
 		pyFile = baseName+'_importable.py'
 		
-		# very ugly hack to make the tests pass when pypycpyo is not installed
+		# very ugly hack to make the tests pass when modsniffer is not installed
 		# (get the parent directory of the directory test_detector.py is in)
 		cwd = os.path.split(os.path.split(__file__)[0])[0]
 		with open(pyFile, 'wb') as tempFile:
@@ -113,10 +115,8 @@ from twisted.python import log
 log.startLogging(sys.stdout)
 
 sys.path.insert(0, %s)
-from pypycpyo import detector
+from modsniffer import detector
 import time
-
-pyLaunchTime = %s
 
 stop = False
 
@@ -124,13 +124,13 @@ def setStop():
 	global stop
 	stop = True
 
-class MoreTrackingDetector(detector.SourceChangesDetector):
+class MoreTrackingDetector(detector.ModulesChangeDetector):
 	alsoTrackPycPyos = True
 
-class NoisyDetector(detector.SourceChangesDetector):
+class NoisyDetector(detector.ModulesChangeDetector):
 	noisy = True
 
-stopper = %s(setStop, pyLaunchTime, usePyflakes=True)
+stopper = %s(setStop, usePyflakes=True)
 
 stopper.checkForChanges()
 
@@ -142,12 +142,12 @@ while True:
 	if stop:
 		print '[not detector] Stopping because changes found.'
 		break
-	time.sleep(0.01)''' % (repr(cwd), self.pyLaunchTime, self.stopper))
+	time.sleep(0.01)''' % (repr(cwd), self.stopper))
 
 		if self.makePycPyoAndDeletePy:
 			import py_compile
-			py_compile.compile(pyFile, pyFile+'c')
-			py_compile.compile(pyFile, pyFile+'o')
+			py_compile.compile(pyFile, pyFile + 'c')
+			py_compile.compile(pyFile, pyFile + 'o')
 			os.unlink(pyFile)
 
 		d = defer.Deferred()
@@ -155,7 +155,8 @@ while True:
 		def startRealTest():
 			# Our CPython prime2 branch supports stripping docstrings
 			# in non-optimized mode with the -N flag, and we need to support
-			# this here. In the future, we could not spawn Python at all in these tests.
+			# this here.  In the future, we could not spawn Python at all
+			# in these tests.
 			try:
 				# Note that sys.flags is missing in pypy, and strip_docstrings
 				# is missing in CPython trunk.
@@ -192,7 +193,7 @@ class OnlyMtimeChanged(DetectorTests):
 
 	def cbProcessReady(self, pyFile):
 		import time
-		os.utime(pyFile, (time.time()+1, time.time()+1))
+		os.utime(pyFile, (time.time() + 1, time.time() + 1))
 
 
 
@@ -265,44 +266,11 @@ class WhenPyflakesMessage(DetectorTests):
 
 
 
-class ImmediateChange(DetectorTests):
-	"""
-	Because we pass an (almost accurate) pyLaunchTime,
-	this process should restart immediately without us overwriting anything.
-	"""
-	# 15 seconds should be enough of a gap. This doesn't slow down the test,
-	# but on an extremely loaded system this test could fail.
-	pyLaunchTime = 'time.time() - 15'
-
-	def cbFinalAsserts(self, pp):
-		log.msg('ImmediateChange stdout', pp.stdout)
-
-		self.assertEqual(1, pp.stdout.count('Write over me now.'))
-		
-		# It might detect a change in more than 1 source file, if the .pyc (.pyo)
-		# files for dependencies like Python's Lib are fresh enough.
-		self.assertIn('Detected a change in ', pp.stdout)
-
-		# at least 2 because of mainFile and pyFile,
-		# but other files may change (for example, during development)
-		# and the tests shouldn't fail if this happens.
-		cLaunchTime = pp.stdout.count('triggered the pyLaunchTime condition')
-		self.assertTrue(cLaunchTime >= 2, cLaunchTime)
-		self.assertEqual(1, pp.stdout.count('[not detector] Stopping because changes found.'))
-
-
-	def cbProcessReady(self, pyFile):
-		# Callback will be called without us doing anything more.
-		pass
-
-
-
 class PycOnlyDetectNewPyc(DetectorTests):
 	"""
 	.pyc loaded at import.
 	change the .pyc, confirm its detection.
 	"""
-	pyLaunchTime = '2**31'
 	stopper = 'MoreTrackingDetector'
 	makePycPyoAndDeletePy = True
 
@@ -317,7 +285,6 @@ class PycOnlyDetectNewPy(DetectorTests):
 	.pyc loaded at import.
 	change the .py, confirm its detection.
 	"""
-	pyLaunchTime = '2**31'
 	stopper = 'MoreTrackingDetector'
 	makePycPyoAndDeletePy = True
 
@@ -335,7 +302,6 @@ class PyoOnlyDetectNewPyo(DetectorTests):
 	if not pythonUsesPyo:
 		skip = "This Python implementation doesn't use .pyo files."
 
-	pyLaunchTime = '2**31'
 	stopper = 'MoreTrackingDetector'
 	makePycPyoAndDeletePy = True
 	extraPyArgs = ['-O']
@@ -354,7 +320,6 @@ class PyoOnlyDetectNewPyc(DetectorTests):
 	if not pythonUsesPyo:
 		skip = "This Python implementation doesn't use .pyo files."
 
-	pyLaunchTime = '2**31'
 	stopper = 'MoreTrackingDetector'
 	makePycPyoAndDeletePy = True
 	extraPyArgs = ['-O']
@@ -373,7 +338,6 @@ class PyoOnlyDetectNewPy(DetectorTests):
 	if not pythonUsesPyo:
 		skip = "This Python implementation doesn't use .pyo files."
 
-	pyLaunchTime = '2**31'
 	stopper = 'MoreTrackingDetector'
 	makePycPyoAndDeletePy = True
 	extraPyArgs = ['-O']
