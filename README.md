@@ -53,9 +53,12 @@ reactor.run()
 ```
 
 Run the above program with `looper`, which will restart it every time it quits:
+
 ```
 looper python demo.py
 ```
+
+If you modify demo.py or any module it has imported, you'll see the program restart.
 
 
 Running the tests
@@ -72,3 +75,5 @@ Wishlist
 	`ModulesChangeDetector` takes a look at it.
 
 *	Rewrite the tests; don't spawn child `python`s.
+
+*	Document optional use of Pyflakes (see the source for now).
