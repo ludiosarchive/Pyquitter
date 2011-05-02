@@ -1,0 +1,22 @@
+#!/bin/zsh -e
+
+# ^^^ sh and bash won't work for this because ${*} below would incorrectly
+# turns arguments with spaces into multiple arguments.
+# There could be a fix, but just using zsh is easier.
+
+# Starts a process in a while 1 loop; it is just like `looper` except it
+# stops after getting a non-zero exit code from the child process.  (Due
+# to the -e in the shebang line above.)
+
+# Sample usage:
+# looper ls -l
+# looper python script.py --some-args
+
+shift 0
+
+while [ 1 ]; do
+	echo "[`date`] starting: ${*}"
+	${*}
+	echo "Process done."
+	sleep 0.25
+done

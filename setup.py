@@ -9,4 +9,5 @@ setup(
 	version=modsniffer.__version__,
 	description="aka Imported Module Sniffer; detects file changes in imported modules",
 	packages=['modsniffer'],
+	scripts=['bin/looper', 'bin/looper-stop'],
 )
