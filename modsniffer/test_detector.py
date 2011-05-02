@@ -4,7 +4,7 @@ import sys
 import os
 
 from twisted.trial import unittest
-from twisted.internet import utils, reactor, defer, protocol
+from twisted.internet import reactor, defer, protocol
 from twisted.python import log
 
 try:
