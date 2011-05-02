@@ -28,7 +28,7 @@ class ChangeDetector(object):
 	This object calls L{callable} if any of the running program's source files
 	or compiled-module files have changed, unless the source files have
 	syntax errors or important pyflakes messages.  You must call
-	C{.checkForChanges} periodically to check for changes in imported modules.
+	C{.poll} periodically to check for changes in imported modules.
 
 	For L{callable}, you should probably pass one that exits the program.
 	A parent process should be restarting your program in a loop.  See the
@@ -102,7 +102,10 @@ class ChangeDetector(object):
 				yield m.__file__
 
 
-	def checkForChanges(self):
+	def poll(self):
+		"""
+		Call this to check for changes.
+		"""
 		start = time.time()
 		howMany = 0
 		whichChanged = set()
@@ -138,10 +141,10 @@ or maybe .pyc files, but no .py files, this message may appear a lot.''' % (repr
 				howMany, time.time() - start))
 
 		if whichChanged:
-			self.sourceFilesChanged(whichChanged)
+			self._sourceFilesChanged(whichChanged)
 
 
-	def sourceFilesChanged(self, whichFiles):
+	def _sourceFilesChanged(self, whichFiles):
 		self._logCallable('Detected a change in %d source files %s' % (
 			len(whichFiles), repr(whichFiles),))
 

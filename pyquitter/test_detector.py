@@ -132,13 +132,13 @@ class NoisyDetector(detector.ChangeDetector):
 
 stopper = %s(setStop, usePyflakes=True)
 
-stopper.checkForChanges()
+stopper.poll()
 
 print "Write over me now."
 sys.stdout.flush()
 
 while True:
-	stopper.checkForChanges()
+	stopper.poll()
 	if stop:
 		print '[not detector] Stopping because changes found.'
 		break

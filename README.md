@@ -9,7 +9,7 @@ make a change.  Here's how Pyquitter helps you solve this problem:
 	`pyquitter.detector.ChangeDetector` with a 0-arg callable
 	(one that quits your program).
 
-2.	In addition, you set up a timer to call `yourChangeDetector.checkForChanges()`
+2.	In addition, you set up a timer to call `yourChangeDetector.poll()`
 	every few seconds.  If any of your imported modules have changed,
 	the `callable` you passed in earlier will be called.
 
@@ -46,7 +46,7 @@ stopper = ChangeDetector(
 	logCallable=log.msg)
 	# logCallable is optional; if not passed, it uses print.
 
-looping = task.LoopingCall(stopper.checkForChanges)
+looping = task.LoopingCall(stopper.poll)
 looping.start(1.0, now=True) # check every 1 sec
 
 reactor.run()
