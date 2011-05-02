@@ -44,6 +44,7 @@ from modsniffer.detector import ModulesChangeDetector
 stopper = ModulesChangeDetector(
 	lambda: reactor.callWhenRunning(reactor.stop),
 	logCallable=log.msg)
+	# logCallable is optional; if not passed, it uses print.
 
 looping = task.LoopingCall(stopper.checkForChanges)
 looping.start(1.0, now=True) # check every 1 sec
