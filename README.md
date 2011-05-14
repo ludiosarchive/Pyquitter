@@ -25,6 +25,11 @@ Installation
 
 This installs the module `pyquitter` as well as the binaries `looper` and `looper-stop`.
 
+Pyquitter is also available on PyPI <http://pypi.python.org/pypi/Pyquitter>
+and you can install it with pip:
+
+`pip install Pyquitter`
+
 
 Sample use
 ========
