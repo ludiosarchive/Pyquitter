@@ -1,8 +1,20 @@
 #!/usr/bin/env python
 
+import os
 from distutils.core import setup
 
 import pyquitter
+
+scripts = ['bin/looper', 'bin/looper-stop']
+if os.name == 'nt':
+	# On Windows, install all 4 scripts because the non-bat
+	# scripts might be useful in an msys/cygwin environment.
+	scripts += ['bin/looper.bat', 'bin/looper-stop.bat']
+
+# Note: For reasons unknown to me, distutils (2.7.2) and pip
+# install the .bat files on non-Windows OSes as well.  This
+# is not intended; don't count on these .bat files being present
+# in the future.
 
 setup(
 	name='Pyquitter',
@@ -20,5 +32,5 @@ setup(
 		'License :: OSI Approved :: MIT License',
 	],
 	packages=['pyquitter'],
-	scripts=['bin/looper', 'bin/looper-stop'],
+	scripts=scripts,
 )

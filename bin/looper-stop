@@ -4,19 +4,19 @@
 # turns arguments with spaces into multiple arguments.
 # There could be a fix, but just using zsh is easier.
 
-# Starts a process in a while 1 loop; it is just like `looper` except it
+# Starts a process in an infinite loop; it is just like `looper` except it
 # stops after getting a non-zero exit code from the child process.  (Due
 # to the -e in the shebang line above.)
 
 # Sample usage:
-# looper ls -l
-# looper python script.py --some-args
+# looper-stop ls -l
+# looper-stop python script.py --some-args
 
 shift 0
 
 while [ 1 ]; do
 	echo "[`date`] starting: ${*}"
 	${*}
-	echo "Process done."
+	echo "Process exited. Starting again in 0.25 seconds..."
 	sleep 0.25
 done
