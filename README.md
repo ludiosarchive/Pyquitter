@@ -89,6 +89,3 @@ Wishlist
 *	Rewrite the tests; don't spawn child `python`s.
 
 *	Document optional use of Pyflakes (see the source for now).
-
-*	For watching files, use inotify or Windows-specific APIs.  This avoids
-	`stat`'ing hundreds of files every few seconds.
