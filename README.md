@@ -67,6 +67,12 @@ Run the above program with `looper`, which will restart it every time it quits:
 looper python demo.py
 ```
 
+or on Windows:
+
+```
+C:\Python27\Scripts\looper C:\Python27\python demo.py
+```
+
 If you modify demo.py or any module it has imported, you'll see the program restart.
 
 
