@@ -62,6 +62,7 @@ class ChangeDetector(object):
 		self.callable = callable
 		self._logCallable = logCallable
 		self.usePyflakes = usePyflakes
+		self._nonModuleFiles = set()
 
 		# _unresolvedSourceProblems exists because checking
 		# every imported file for syntax errors and Pyflakes messages would
@@ -100,6 +101,37 @@ class ChangeDetector(object):
 			else:
 				# could be .py or .so or anything else
 				yield m.__file__
+
+		for fname in self._nonModuleFiles.copy():
+			yield fname
+
+
+	def watchNonModuleFile(self, fname):
+		"""
+		Adds C{fname} to the set of files that are also polled for changes.
+		If already in the set, this is a no-op.
+
+		This is useful for watching changes to settings files and other
+		important files that are not imported.
+
+		Note that if the C{fname.lower()} ends with C{'.py'}, the file will
+		be run through Python's C{compile} function to check for syntax
+		errors.  If there are syntax errors, ChangeDetector will not call
+		the C{callable}.  If C{usePyflakes=True} and Pyflakes is available,
+		the file will also be run through Pyflakes, and if there are
+		C{UnusedImport} or C{UnusedVariable} errors, ChangeDetector will
+		not call the C{callable}.
+		"""
+		self._nonModuleFiles.add(fname)
+
+
+	def forgetNonModuleFile(self, fname):
+		"""
+		Removes C{fname} from the set of files that are also polled for
+		changes.  If not in the set, this is a no-op.
+		"""
+		self._nonModuleFiles.discard(fname)
+		self._unresolvedSourceProblems.discard(fname)
 
 
 	def poll(self):
@@ -145,7 +177,7 @@ or maybe .pyc files, but no .py files, this message may appear a lot.''' % (repr
 
 
 	def _sourceFilesChanged(self, whichFiles):
-		self._logCallable('Detected a change in %d source files %s' % (
+		self._logCallable('Detected a change in %d files %s' % (
 			len(whichFiles), repr(whichFiles),))
 
 		for f in self._unresolvedSourceProblems:
@@ -167,8 +199,10 @@ or maybe .pyc files, but no .py files, this message may appear a lot.''' % (repr
 		# TODO: test all _unresolvedSourceProblems logic
 		for f in whichFiles:
 			if f.lower().endswith('.py'):
-				# We can only check for syntax errors and pyflakes messages in .py files.
-				# .so, .pyc, .pyo files are not checked for validity.
+				# We can only check for syntax errors and pyflakes messages
+				# in .py files.
+				# .so, .pyc, .pyo, and non-.py _nonModuleFiles are not checked
+				# for validity.
 				didParse = False
 				try:
 					try:

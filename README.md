@@ -25,7 +25,8 @@ Installation
 
 `python setup.py install`
 
-This installs the module `pyquitter` as well as the binaries `looper` and `looper-stop`.
+This installs the module `pyquitter` as well as the binaries `looper` and
+`looper-stop`.
 
 Pyquitter is also available on PyPI <http://pypi.python.org/pypi/Pyquitter>
 and you can install it with pip:
@@ -73,7 +74,33 @@ or on Windows:
 C:\Python27\Scripts\looper C:\Python27\python demo.py
 ```
 
-If you modify demo.py or any module it has imported, you'll see the program restart.
+If you modify demo.py or any module it has imported, you'll see the program
+restart.  If a module is modified but there are syntax errors, the callable
+passed to `ChangeDetector` will not be called until the syntax errors are
+fixed.
+
+
+
+Watching for changes to non-module files
+========================================
+
+After `stopper = ` in the above example:
+
+```
+stopper.watchNonModuleFile('/home/me/my_settings.py')
+stopper.watchNonModuleFile('/home/me/blob')
+```
+
+Note that because `/home/me/my_settings.py` ends with '.py', the
+file will be checked for syntax errors using Python's `compile`
+function.  If the file is modified and there are syntax errors,
+the callable passed to `ChangeDetector` will not be called.
+
+To stop watching a non-module file:
+
+```
+stopper.forgetNonModuleFile('/home/me/my_settings.py')
+```
 
 
 
