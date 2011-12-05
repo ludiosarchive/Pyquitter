@@ -74,6 +74,8 @@ or on Windows:
 C:\Python27\Scripts\looper C:\Python27\python demo.py
 ```
 
+(Note that in the normal `cmd` shell, the above command actually runs `looper.bat`.)
+
 If you modify demo.py or any module it has imported, you'll see the program
 restart.  If a module is modified but there are syntax errors, the callable
 passed to `ChangeDetector` will not be called until the syntax errors are
