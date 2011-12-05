@@ -250,7 +250,7 @@ class WhenPyflakesMessage(DetectorTests):
 		skip = "Can't run this test without Pyflakes"
 
 	def cbFinalAsserts(self, pp):
-		self.assertEqual(1, pp.stdout.count('Write over me now.\n'))
+		self.assertEqual(1, pp.stdout.count('Write over me now.'))
 		# It might detect a change in more than 1 source file, if the .pyc (.pyo)
 		# files for dependencies like Python's Lib are fresh enough.
 		self.assertEqual(1, pp.stdout.count('Detected a change in '))
