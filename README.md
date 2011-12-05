@@ -95,8 +95,8 @@ stopper.watchNonModuleFile('/home/me/blob')
 
 Note that because `/home/me/my_settings.py` ends with '.py', the
 file will be checked for syntax errors using Python's `compile`
-function.  If the file is modified and there are syntax errors,
-the callable passed to `ChangeDetector` will not be called.
+function.  As with module files, if there are syntax errors,
+`callable` will not be called until the errors are fixed.
 
 To stop watching a non-module file:
 
