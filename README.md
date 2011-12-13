@@ -124,3 +124,12 @@ Wishlist
 *	Rewrite the tests; don't spawn child `python`s.
 
 *	Document optional use of Pyflakes (see the source for now).
+
+
+
+Contributing
+============
+
+Patches and pull requests are welcome.
+
+This coding standard applies: http://ludios.org/coding-standard/
