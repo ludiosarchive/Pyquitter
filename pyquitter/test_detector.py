@@ -78,7 +78,7 @@ class DetectorTests(unittest.TestCase):
 
 		# makePycPyoAndDeletePy = False means we are not tracking bare
 		# pyc and pyo files, so writing something to them should have
-		# no effect. Confirm this.
+		# no effect.  Confirm this.
 		with open(pyFile + 'c', 'wb') as f:
 			f.write('#1')
 		with open(pyFile + 'o', 'wb') as f:
