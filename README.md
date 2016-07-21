@@ -23,7 +23,11 @@ make a change.  Here's how Pyquitter helps you solve this problem:
 Installation
 ============
 
-`python setup.py install`
+```
+git clone https://github.com/ludios/Pyquitter
+cd Pyquitter
+pip install --user .
+```
 
 This installs the module `pyquitter` as well as the binaries `looper` and
 `looper-stop`.
@@ -31,7 +35,9 @@ This installs the module `pyquitter` as well as the binaries `looper` and
 Pyquitter is also available on PyPI <http://pypi.python.org/pypi/Pyquitter>
 and you can install it with pip:
 
-`pip install Pyquitter`
+```
+pip install --user Pyquitter
+```
 
 
 
@@ -40,7 +46,7 @@ Sample use
 
 This example uses Twisted, but there's nothing Twisted-specific in Pyquitter.
 
-```
+```py
 # demo.py
 
 import sys
@@ -88,7 +94,7 @@ Watching for changes to non-module files
 
 After `stopper = ` in the above example:
 
-```
+```py
 stopper.watchNonModuleFile('/home/me/my_settings.py')
 stopper.watchNonModuleFile('/home/me/blob')
 ```
@@ -100,7 +106,7 @@ function.  As with module files, if there are syntax errors,
 
 To stop watching a non-module file:
 
-```
+```py
 stopper.forgetNonModuleFile('/home/me/my_settings.py')
 ```
 
@@ -124,12 +130,3 @@ Wishlist
 *	Rewrite the tests; don't spawn child `python`s.
 
 *	Document optional use of Pyflakes (see the source for now).
-
-
-
-Contributing
-============
-
-Patches and pull requests are welcome.
-
-This coding standard applies: http://ludios.org/coding-standard/
