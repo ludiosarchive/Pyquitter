@@ -1,5 +1,5 @@
-Pyquitter overview
-==================
+Pyquitter
+=========
 
 So, you've got a program that you're working on, and you're tired of
 hitting Ctrl-C, Up, Enter.  You'd like it to just restart every time you
@@ -20,8 +20,7 @@ make a change.  Here's how Pyquitter helps you solve this problem:
 
 
 
-Installation
-============
+## Installation
 
 ```
 git clone https://github.com/ludios/Pyquitter
@@ -41,8 +40,7 @@ pip install --user Pyquitter
 
 
 
-Sample use
-==========
+## Sample use
 
 This example uses Twisted, but there's nothing Twisted-specific in Pyquitter.
 
@@ -89,8 +87,7 @@ fixed.
 
 
 
-Watching for changes to non-module files
-========================================
+## Watching for changes to non-module files
 
 After `stopper = ` in the above example:
 
@@ -112,15 +109,13 @@ stopper.forgetNonModuleFile('/home/me/my_settings.py')
 
 
 
-Running the tests
-=================
+## Running the tests
 
 Install Twisted, then `trial pyquitter`.
 
 
 
-Wishlist
-========
+## Wishlist
 
 *	Detect changes to modules outside of the process.  Feed a list of files
 	to some parent process that monitors the modules for the often-restarting child.
